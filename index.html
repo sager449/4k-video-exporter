@@ -11,7 +11,7 @@
             --surface-color: #FFFFFF;
             --text-main: #1C1C1E;
             --text-muted: #8E8E93;
-            --primary-color: #7B2CBF; /* بنفسجي */
+            --primary-color: #7B2CBF; 
             --border-color: #E5E5EA;
         }
 
@@ -51,32 +51,26 @@
         }
         .category-btn.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
 
-        /* 3. البانر الرئيسي (بدون ظل تماماً) */
+        /* 3. البانر الرئيسي */
         .hero-banner {
             margin: 10px 20px; height: 160px; border-radius: 20px;
             background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: white; position: relative; overflow: hidden;
-            /* إزالة أي ظل */
             box-shadow: none; 
             border: none;
         }
         .hero-banner h1 { font-size: 32px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
         .hero-banner p { font-size: 14px; font-weight: 700; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px; margin-top: 10px; }
 
-        /* 4. أيقونات الإجراءات السريعة (مسطحة تماماً) */
+        /* 4. أيقونات الإجراءات السريعة */
         .quick-actions { display: flex; justify-content: space-between; margin: 25px 20px; }
         .action-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
-        
         .action-icon {
             width: 55px; height: 55px; border-radius: 18px;
             display: flex; align-items: center; justify-content: center;
-            background-color: var(--surface-color); 
-            /* إزالة الظل والحدود */
-            border: none;
-            box-shadow: none;
+            background-color: var(--surface-color); border: none;
         }
-        
         .action-icon svg { width: 28px; height: 28px; }
         .action-item span { font-size: 12px; font-weight: 700; color: var(--text-main); }
 
@@ -87,15 +81,12 @@
 
         .image-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px; }
         
-        .img-card { display: flex; flex-direction: column; gap: 5px; cursor: pointer; }
+        .img-card { display: flex; flex-direction: column; gap: 5px; cursor: pointer; transition: opacity 0.3s; }
+        .img-card.hidden { display: none; } /* لإخفاء القوالب عند التصفية */
         
         .img-wrapper {
-            width: 100%; 
-            aspect-ratio: 9/16; 
-            border-radius: 12px; overflow: hidden;
-            background-color: #eee; position: relative;
-            /* الظل هنا مقصود لإبراز الصور */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+            width: 100%; aspect-ratio: 9/16; border-radius: 12px; overflow: hidden;
+            background-color: #eee; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
         }
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -109,14 +100,11 @@
         .img-card h3 { font-size: 13px; font-weight: 700; color: var(--text-main); text-align: center; margin-top: 5px; }
         .img-card p { font-size: 11px; color: var(--text-muted); text-align: center; }
 
-        /* 6. الشريط السفلي (بدون ظل) */
+        /* 6. الشريط السفلي */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
             background-color: var(--surface-color); display: flex; justify-content: space-around; align-items: center;
-            /* إزالة الظل، والاكتفاء بحد علوي رفيع */
-            box-shadow: none; 
-            border-top: 1px solid var(--border-color); 
-            z-index: 100;
+            box-shadow: none; border-top: 1px solid var(--border-color); z-index: 100;
         }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
         .nav-item svg { width: 24px; height: 24px; fill: var(--text-muted); }
@@ -132,19 +120,19 @@
     <div class="top-bar">
         <div class="menu-btn"><span></span><span></span><span></span></div>
         <div class="search-box">
-            <input type="text" placeholder="بحث...">
+            <input type="text" id="searchInput" placeholder="بحث..." oninput="filterTemplates()">
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         </div>
     </div>
 
     <!-- التصنيف حسب التخصص المهني -->
-    <div class="categories-scroll">
-        <div class="category-btn active">الكل</div>
-        <div class="category-btn">مونتير</div>
-        <div class="category-btn">مصور</div>
-        <div class="category-btn">صانع محتوى</div>
-        <div class="category-btn">مصمم جرافيك</div>
-        <div class="category-btn">مهندس صوت</div>
+    <div class="categories-scroll" id="categoryContainer">
+        <div class="category-btn active" onclick="filterCategory('all', this)">الكل</div>
+        <div class="category-btn" onclick="filterCategory('montage', this)">مونتير</div>
+        <div class="category-btn" onclick="filterCategory('photo', this)">مصور</div>
+        <div class="category-btn" onclick="filterCategory('content', this)">صانع محتوى</div>
+        <div class="category-btn" onclick="filterCategory('design', this)">مصمم جرافيك</div>
+        <div class="category-btn" onclick="filterCategory('audio', this)">مهندس صوت</div>
     </div>
 
     <!-- البانر الرئيسي -->
@@ -179,54 +167,67 @@
         <span>المزيد <</span>
     </div>
 
-    <div class="image-grid">
-        <div class="img-card">
+    <div class="image-grid" id="templateGrid">
+        <!-- القوالب (سيتم إخفاء/إظهار بعضها بناءً على التصنيف) -->
+        
+        <!-- قالب مونتير -->
+        <div class="img-card" data-category="montage" data-title="Tree peony" onclick="openTemplate('Tree peony')">
             <div class="img-wrapper">
                 <img src="https://images.unsplash.com/photo-1490682143684-14369e18dce8?q=80&w=400&auto=format&fit=crop" alt="Template">
                 <div class="video-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg> فيديو</div>
             </div>
             <h3>Tree peony</h3>
-            <p>المتاح</p>
+            <p>مونتير</p>
         </div>
-        <div class="img-card">
+
+        <!-- قالب مصور -->
+        <div class="img-card" data-category="photo" data-title="Green River" onclick="openTemplate('Green River')">
             <div class="img-wrapper">
                 <img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?q=80&w=400&auto=format&fit=crop" alt="Template">
                 <div class="video-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg> فيديو</div>
             </div>
             <h3>Green River</h3>
-            <p>المتاح</p>
+            <p>مصور</p>
         </div>
-        <div class="img-card">
+
+        <!-- قالب صانع محتوى -->
+        <div class="img-card" data-category="content" data-title="Explode" onclick="openTemplate('Explode')">
             <div class="img-wrapper">
                 <img src="https://images.unsplash.com/photo-1506744626753-eda818c6cce5?q=80&w=400&auto=format&fit=crop" alt="Template">
                 <div class="video-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg> فيديو</div>
             </div>
             <h3>Explode</h3>
-            <p>المتاح</p>
+            <p>صانع محتوى</p>
         </div>
-        <div class="img-card">
+
+        <!-- قالب مصمم جرافيك -->
+        <div class="img-card" data-category="design" data-title="Minimal" onclick="openTemplate('Minimal')">
             <div class="img-wrapper">
                 <img src="https://images.unsplash.com/photo-1585036156171-384164a8c675?q=80&w=400&auto=format&fit=crop" alt="Template">
                 <div class="video-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg> فيديو</div>
             </div>
             <h3>Minimal</h3>
-            <p>المتاح</p>
+            <p>مصمم جرافيك</p>
         </div>
-        <div class="img-card">
+
+        <!-- قالب مونتير -->
+        <div class="img-card" data-category="montage" data-title="Galaxy" onclick="openTemplate('Galaxy')">
             <div class="img-wrapper">
                 <img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=400&auto=format&fit=crop" alt="Template">
                 <div class="video-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg> فيديو</div>
             </div>
             <h3>Galaxy</h3>
-            <p>المتاح</p>
+            <p>مونتير</p>
         </div>
-        <div class="img-card">
+
+        <!-- قالب مهندس صوت -->
+        <div class="img-card" data-category="audio" data-title="Fire" onclick="openTemplate('Fire')">
             <div class="img-wrapper">
                 <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=400&auto=format&fit=crop" alt="Template">
                 <div class="video-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg> فيديو</div>
             </div>
             <h3>Fire</h3>
-            <p>المتاح</p>
+            <p>مهندس صوت</p>
         </div>
     </div>
 
@@ -246,5 +247,50 @@
         </div>
     </div>
 
+    <script>
+        let currentCategory = 'all';
+
+        // دالة تصفية القوالب حسب التصنيف
+        function filterCategory(category, btn) {
+            currentCategory = category;
+            
+            // تحديث الزر النشط
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // تطبيق التصفية
+            applyFilters();
+        }
+
+        // دالة البحث
+        function filterTemplates() {
+            applyFilters();
+        }
+
+        // دالة التطبيق الموحدة (للبحث والتصنيف)
+        function applyFilters() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.img-card');
+
+            cards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                const cardTitle = card.getAttribute('data-title').toLowerCase();
+
+                const matchesCategory = (currentCategory === 'all' || cardCategory === currentCategory);
+                const matchesSearch = cardTitle.includes(searchText);
+
+                if (matchesCategory && matchesSearch) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // دالة فتح القالب
+        function openTemplate(name) {
+            alert('سيتم فتح تفاصيل القالب: ' + name + '\n(قريباً)');
+        }
+    </script>
 </body>
-                    </html>
+</html>
